@@ -39,9 +39,24 @@ const web_bluetooth_available_template =
            are connected to it over BLE, and press the connect button below.
          </p>`;
 
+let session = {
+    connected: false,
+    device: null,
+};
+
+async function on_click_connect(event) {
+
+}
+
+async function on_click_disconnect(event) {
+
+}
+
 const demo_application_template =
     html`<div>
-           <button>Connect</button>
+           <button @click=${session.connected ? on_click_disconnect : on_click_connect}>
+             ${session.connected ? "Connect" : "Disconnect"}
+           </button>
          </div>
          <div>
          </div>`;
