@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>WebVoltmeter Demo</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/normalize.css/normalize.css" type="text/css">
+    <link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura.css" type="text/css">
+    <script src="demo.js" type="module"></script>
+  </head>
+
+  <body>
+    <noscript>
+      <p>This demo uses the Web Bluetooth feature to display measurements taken
+         by a Bluetooth Low Energy (BLE) connected voltmeter. It will not function
+         without JavaScript enabled. Please view this page in a browser that
+         supports Web Bluetooth like <a href="https://www.google.com/chrome/">Chrome</a>/<a href="https://www.chromium.org/Home">Chromium</a> and enable JavaScript.
+      </p>
+    </noscript>
+    <h1>WebVoltmeter</h1>
+    <p>This page is a demo using Web Bluetooth to display measurements taken by
+       a Bluetooth Low Energy (BLE) connected voltmeter. This demo should work
+       on most Android phones when using Google Chrome and on laptops or
+       desktop computers running Windows 10, Linux, or macOS when using if
+       the computer has a Bluetooth 4 capable radio.
+    </p>
+    <div id="demo-ble-check"></div>
+    <div id="demo-application"></div>
+  </body>
+</html>
