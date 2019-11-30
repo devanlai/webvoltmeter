@@ -2,6 +2,7 @@
  * Javascript for the demo voltmeter application
  */
 import {html, render} from 'https://unpkg.com/lit-html?module';
+import {request_device} from './hidance.js';
 
 const no_web_bluetooth_template =
     html`<p>
@@ -42,20 +43,43 @@ const web_bluetooth_available_template =
 let session = {
     connected: false,
     device: null,
+    ui_root: null,
 };
 
-async function on_click_connect(event) {
+async function on_disconnect(device, event) {
+    session.connected = false;
+    session.device = null;
+    render(demo_application_template(session), session.ui_root);
+}
+}
 
+async function on_click_connect(event) {
+    session.device = await request_device();
+    if (session.device) {
+        await session.device.initialize(on_disconnect);
+        session.connected = true;
+        render(demo_application_template(session), session.ui_root);
+        //session.device.add_data_callback();
+        await session.device.start_notifications();
+    } else {
+        render(demo_application_template(session), session.ui_root);
+    }
 }
 
 async function on_click_disconnect(event) {
-
+    if (session.device) {
+        await session.device.disconnect();
+        session.device = null;
+        session.connected = false;
+        render(demo_application_template(session), session.ui_root);
+    }
 }
 
-const demo_application_template =
+const demo_application_template = (session) =>
     html`<div>
+           <div>${session.connected ? ("Connected to " + session.device.name) : ""}</div>
            <button @click=${session.connected ? on_click_disconnect : on_click_connect}>
-             ${session.connected ? "Connect" : "Disconnect"}
+             ${session.connected ? "Disconnect" : "Connect"}
            </button>
          </div>
          <div>
@@ -64,6 +88,7 @@ const demo_application_template =
 document.addEventListener('DOMContentLoaded', event => {
     const demo_ble_check = document.getElementById("demo-ble-check");
     const demo_application = document.getElementById("demo-application");
+    session.ui_root = demo_application;
 
     let have_web_bluetooth = (navigator.bluetooth != null);
     if (have_web_bluetooth) {
@@ -71,7 +96,7 @@ document.addEventListener('DOMContentLoaded', event => {
         navigator.bluetooth.getAvailability().then(available => {
             if (available) {
                 render(web_bluetooth_available_template, demo_ble_check);
-                render(demo_application_template, demo_application);
+                render(demo_application_template(session), demo_application);
             } else {
                 render(web_bluetooth_unavailable_template, demo_ble_check);
             }

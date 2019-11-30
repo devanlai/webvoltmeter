@@ -16,6 +16,10 @@ class BaseBLEDevice {
         return this._device.gatt.connected;
     }
 
+    get name() {
+        return this._device.name;
+    }
+
     add_disconnect_callback(callback) {
         if (!this._disconnect_callbacks.includes(callback)) {
             this._disconnect_callbacks.push(callback);
@@ -35,7 +39,7 @@ class BaseBLEDevice {
         let max_attempts = 2;
         while (attempts < max_attempts) {
             try {
-                await this.read_handles(server);
+                await this.setup(server);
                 this._server = server;
                 break;
             } catch (err) {
@@ -53,8 +57,8 @@ class BaseBLEDevice {
             }
         }
 
-        this._device.addEventListener("gattserverdisconnected", event => {
-            this.handle_disconnect(event);
+        this._device.addEventListener("gattserverdisconnected", async event => {
+            await this.handle_disconnect(event);
         });
     }
 
@@ -62,15 +66,15 @@ class BaseBLEDevice {
         await this._device.gatt.disconnect();
     }
 
-    handle_disconnect(event) {
-        if (!event.target.gatt.connected && evt.target == this._device) {
+    async handle_disconnect(event) {
+        if (!event.target.gatt.connected && event.target == this._device) {
             for (let callback of this._disconnect_callbacks) {
                 await callback(this, event);
             }
         }
     }
 
-    async read_handles(gatt_server) {
+    async setup(gatt_server) {
         // To be implemented by subclasses
     }
 }
