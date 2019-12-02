@@ -22,7 +22,7 @@ const web_bluetooth_unavailable_template =
     html`<p>
            <span role="image" aria-label="x">❌</span>
            Your browser supports Web Bluetooth, but the Web Bluetooth
-           feature is currently unavaiable. One of the following situations
+           feature is currently unavailable. One of the following situations
            may apply:
            <ul>
              <li>Your device does not have a BLE capable radio</li>
@@ -50,7 +50,6 @@ async function on_disconnect(device, event) {
     session.connected = false;
     session.device = null;
     render(demo_application_template(session), session.ui_root);
-}
 }
 
 async function on_click_connect(event) {
