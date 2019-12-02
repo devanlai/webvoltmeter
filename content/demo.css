@@ -1,0 +1,9 @@
+.meter-display {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.meter-display > div {
+    flex: 1 1 50%;
+}
