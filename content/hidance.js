@@ -16,6 +16,12 @@ class HiDANCEEnergyMeter extends BaseBLEDevice {
         super(device);
         this.characteristic = null;
         this._data_callbacks = [];
+        this._packet_callbacks = [];
+
+        this._first_chunk = null;
+        this._first_chunk_timestamp = null;
+        this._second_chunk = null;
+        this._second_chunk_timestamp = null;
     }
 
     add_data_callback(callback) {
@@ -31,6 +37,19 @@ class HiDANCEEnergyMeter extends BaseBLEDevice {
         }
     }
 
+    add_packet_callback(callback) {
+        if (!this._packet_callbacks.includes(callback)) {
+            this._packet_callbacks.push(callback);
+        }
+    }
+
+    remove_packet_callback(callback) {
+        const index = this._packet_callbacks.indexOf(callback);
+        if (index > -1) {
+            this._packet_callbacks.splice(index, 1);
+        }
+    }
+
     async setup(gatt_server) {
         const service = await gatt_server.getPrimaryService(HIDANCE_SERVICE_UUID);
         this.characteristic = await service.getCharacteristic(HIDANCE_SERVICE_CHAR_UUID);
@@ -40,11 +59,42 @@ class HiDANCEEnergyMeter extends BaseBLEDevice {
     }
 
     async handle_notification(dataview) {
-        for (let callback of this._data_callbacks) {
+        // Dispatch callbacks for the individual packet
+        for (let callback of this._packet_callbacks) {
             await callback(dataview);
         }
 
-        // TODO: parse data
+        // Check if this is a the first packet or the second packet in the sequence
+        if (dataview.byteLength == 20 &&
+            dataview.getUint8(0) == 0xFF && dataview.getUint8(2) == 0x01) {
+            this._first_chunk = dataview.buffer;
+            this._first_chunk_timestamp = Date.now();
+        } else if (dataview.byteLength == 16) {
+            this._second_chunk = dataview.buffer;
+            this._second_chunk_timestamp = Date.now();
+        }
+
+        if (this._first_chunk !== null && this._second_chunk !== null) {
+            const delta_ms = this._second_chunk_timestamp - this._first_chunk_timestamp;
+            if (delta_ms >= 0 && delta_ms < 1000) {
+                const data = new Uint8Array([
+                    ...new Uint8Array(this._first_chunk),
+                    ...new Uint8Array(this._second_chunk)
+                ]);
+                let view = new DataView(data);
+                // Dispatch callbacks for the complete data
+                for (let callback of this._data_callbacks) {
+                    await callback(view);
+                }
+
+                // TODO: parse data and send parsed data via callback
+            }
+
+            this._first_chunk = null;
+            this._first_chunk_timestamp = null;
+            this._second_chunk = null;
+            this._second_chunk_timestamp = null;    
+        }
     }
 
     async start_notifications() {
