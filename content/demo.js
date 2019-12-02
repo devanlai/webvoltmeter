@@ -12,6 +12,7 @@ const no_web_bluetooth_template =
            add a screencast showing the demo functionality for those that
            are interested in seeing what the demo can do without needing
            the hardware or a Web Bluetooth enabled browser.
+           For details on which browsers are supported, see <a href="https://caniuse.com/#feat=web-bluetooth">caniuse.com</a>.
          </p>`;
 
 const availability_loading_template = 
