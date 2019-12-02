@@ -66,6 +66,53 @@ The device automatically sends notifications on the `ffe1` characteristic. The a
 
 Apart from length, the first chunk can be identified by always starting with `FF 55`. The Android application checks that the first byte is `FF` and the third byte is `01`.
 
+Sample notification:
+
+    FF 55 01 03 00 01 FC 00 00 00 00 00 00 00 00 00 00 00 08 00
+    07 00 13 00 00 00 06 3C 0D AC 00 00 03 E8 64 29
+
+#### Notification framing
+The first three bytes appear to be a fixed format header.
+The fourth byte appears to be referred to as the "adu", which is some kind of device mode selection.
+The remaining bytes seem to be measurement values, encoded as big-endian integers. The meaning of each field seems to vary with the current device mode.
+
+##### Mode 1 format
+| Offset | Width  | Purpose        | Resolution | Notes    |
+| ------ | ------ | -------------- | ---------- | -------- |
+| 4      | 24 bit | Voltage        | 0.1 V      |          |
+| 7      | 24 bit | Current        | 0.001 A    |          |
+| 10     | 24 bit | Power          | 0.1 W      |          |
+| 13     | 32 bit | Energy         | 0.01 kWh   |          |
+| 17     | 24 bit | Price?         | cents?     | Seems like cents per kWh |
+| 20     | 16 bit | Frequency      | 0.1 Hz     |          |
+| 22     | 16 bit | Power Factor   | 0.001      |          |
+| 24     | 16 bit | Temperature    | 1 °C       |          |
+| 30     |  8 bit | Backlight      | 1 second   | Backlight duration, with special meaning for 0 as "long black" and 60 as "long bright" |
+
+##### Mode 2 format
+| Offset | Width  | Purpose        | Resolution | Notes    |
+| ------ | ------ | -------------- | ---------- | -------- |
+| 4      | 24 bit | Voltage        | 0.1 V      |          |
+| 7      | 24 bit | Current        | 0.001 A    |          |
+| 10     | 24 bit | Charge         | 0.01 Ah    |          |
+| 13     | 32 bit | Energy         | 0.01 kWh   |          |
+| 17     | 24 bit | Price?         | cents?     | Seems like cents per kWh |
+| 24     | 16 bit | Temperature    | 1 °C       |          |
+| 30     |  8 bit | Backlight      | 1 second   | Backlight duration, with special meaning for 0 as "long black" and 60 as "long bright" |
+
+##### Mode 3 format
+| Offset | Width  | Purpose        | Resolution | Notes    |
+| ------ | ------ | -------------- | ---------- | -------- |
+| 4      | 24 bit | Voltage        | 0.01 V     |          |
+| 7      | 24 bit | Current        | 0.01 A     |          |
+| 10     | 24 bit | Charge         | 0.001 Ah   |          |
+| 13     | 32 bit | Energy         | 0.01 Wh    |          |
+| 17     | 16 bit | USB D+ Voltage | 0.01 V     |          |
+| 19     | 16 bit | USB D- Voltage | 0.01 V     |          |
+| 21     | 16 bit | Temperature    | 1 °C       |          |
+| 23     | 16 bit | On time        | 1 second   |          |
+| 30     |  8 bit | Backlight      | 1 second   | Backlight duration, with special meaning for 0 as "long black" and 60 as "long bright" |
+
 ### Bluetooth command framing
 
 The device accepts commands written to the `ffe1` characteristic.
