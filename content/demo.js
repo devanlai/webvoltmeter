@@ -14,6 +14,25 @@ let session = {
     latest: {},
 };
 
+function show_error_dialog(error, error_title=null) {
+    let dialog = document.createElement("dialog");
+    if (!error_title) {
+        error_title = "Uh oh! Something went wrong.";
+    }
+    let dialog_content = html`
+        <h1>${error_title}</h1>
+        <p>${error}</p>
+        <button @click=${(evt) => dialog.close()}>Close</button>`;
+    render(dialog_content, dialog);
+    dialog.addEventListener("close", (evt) => {
+        dialog.remove();
+    });
+
+    document.querySelector("body").appendChild(dialog);
+
+    dialog.showModal();
+}
+
 async function on_disconnect(device, event) {
     session.connected = false;
     session.status = "Disconnected. Click connect to connect to another device."
@@ -28,26 +47,34 @@ function on_info(info) {
 }
 
 async function on_click_connect(event) {
-    session.device = await request_device();
-    if (session.device) {
-        session.device.add_disconnect_callback(on_disconnect);
-        await session.device.initialize();
-        session.connected = true;
-        session.status = `Connected to ${session.device.name}`;
-        render(demo_application_template(session), session.ui_root);
-        session.device.add_info_callback(on_info);
-        await session.device.start_notifications();
-    } else {
-        render(demo_application_template(session), session.ui_root);
+    try {
+        session.device = await request_device();
+        if (session.device) {
+            session.device.add_disconnect_callback(on_disconnect);
+            await session.device.initialize();
+            session.connected = true;
+            session.status = `Connected to ${session.device.name}`;
+            render(demo_application_template(session), session.ui_root);
+            session.device.add_info_callback(on_info);
+            await session.device.start_notifications();
+        } else {
+            render(demo_application_template(session), session.ui_root);
+        }
+    } catch (err) {
+        show_error_dialog(err);
     }
 }
 
 async function on_click_disconnect(event) {
-    if (session.device) {
-        await session.device.disconnect();
-        session.device = null;
-        session.connected = false;
-        render(demo_application_template(session), session.ui_root);
+    try {
+        if (session.device) {
+            await session.device.disconnect();
+            session.device = null;
+            session.connected = false;
+            render(demo_application_template(session), session.ui_root);
+        }
+    } catch (err) {
+        show_error_dialog(err);
     }
 }
 
