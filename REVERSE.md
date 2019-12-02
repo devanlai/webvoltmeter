@@ -77,6 +77,7 @@ The fourth byte appears to be referred to as the "adu", which is some kind of de
 The remaining bytes seem to be measurement values, encoded as big-endian integers. The meaning of each field seems to vary with the current device mode.
 
 ##### Mode 1 format
+
 | Offset | Width  | Purpose        | Resolution | Notes    |
 | ------ | ------ | -------------- | ---------- | -------- |
 | 4      | 24 bit | Voltage        | 0.1 V      |          |
@@ -90,6 +91,7 @@ The remaining bytes seem to be measurement values, encoded as big-endian integer
 | 30     |  8 bit | Backlight      | 1 second   | Backlight duration, with special meaning for 0 as "long black" and 60 as "long bright" |
 
 ##### Mode 2 format
+
 | Offset | Width  | Purpose        | Resolution | Notes    |
 | ------ | ------ | -------------- | ---------- | -------- |
 | 4      | 24 bit | Voltage        | 0.1 V      |          |
@@ -101,6 +103,7 @@ The remaining bytes seem to be measurement values, encoded as big-endian integer
 | 30     |  8 bit | Backlight      | 1 second   | Backlight duration, with special meaning for 0 as "long black" and 60 as "long bright" |
 
 ##### Mode 3 format
+
 | Offset | Width  | Purpose        | Resolution | Notes    |
 | ------ | ------ | -------------- | ---------- | -------- |
 | 4      | 24 bit | Voltage        | 0.01 V     |          |
