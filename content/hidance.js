@@ -141,6 +141,7 @@ class HiDANCEEnergyMeter extends BaseBLEDevice {
         const mode = dataview.getUint8(3);
         if (mode == 1) {
             let info = {
+                mode:               mode,
                 voltage_v:          getUint24(dataview, 4) / 10.0,
                 current_a:          getUint24(dataview, 7) / 1000.0,
                 power_w:            getUint24(dataview, 10) / 10.0,
@@ -154,6 +155,7 @@ class HiDANCEEnergyMeter extends BaseBLEDevice {
             return info;
         } else if (mode == 2) {
             let info = {
+                mode:               mode,
                 voltage_v:          getUint24(dataview, 4) / 10.0,
                 current_a:          getUint24(dataview, 7) / 1000.0,
                 charge_ah:          getUint24(dataview, 10) / 100.0,
@@ -165,6 +167,7 @@ class HiDANCEEnergyMeter extends BaseBLEDevice {
             return info;
         } else if (mode == 3) {
             let info = {
+                mode:               mode,
                 voltage_v:          getUint24(dataview, 4) / 100.0,
                 current_a:          getUint24(dataview, 7) / 100.0,
                 charge_ah:          getUint24(dataview, 10) / 1000.0,
