@@ -30,7 +30,8 @@ function on_info(info) {
 async function on_click_connect(event) {
     session.device = await request_device();
     if (session.device) {
-        await session.device.initialize(on_disconnect);
+        session.device.add_disconnect_callback(on_disconnect);
+        await session.device.initialize();
         session.connected = true;
         session.status = `Connected to ${session.device.name}`;
         render(demo_application_template(session), session.ui_root);

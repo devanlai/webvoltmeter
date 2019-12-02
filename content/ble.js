@@ -33,7 +33,7 @@ class BaseBLEDevice {
         }
     }
 
-    async initialize(on_disconnect_callback=null) {
+    async initialize() {
         let server = await this._device.gatt.connect();
         let attempts = 0;
         let max_attempts = 2;
