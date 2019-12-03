@@ -190,12 +190,13 @@ async function request_device(name) {
         // List all of the services we want to be able to access
         optionalServices: [HIDANCE_SERVICE_UUID]
     };
+
     if (name) {
         options.filters = [ { name: name } ];
     } else {
-        //options.filters = [ { services: [ davis.COMMAND_SERVICE_UUID] } ]
+        // Accept any of the known models by name
         options.filters = [
-            { namePrefix: "JDY" },
+            { name: "JDY-19" },
         ];
     }
 
