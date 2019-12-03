@@ -76,6 +76,8 @@ The first three bytes appear to be a fixed format header.
 The fourth byte appears to be referred to as the "adu", which is some kind of device mode selection.
 The remaining bytes seem to be measurement values, encoded as big-endian integers. The meaning of each field seems to vary with the current device mode.
 
+The J7-H seems to correspond to an "adu" of 3.
+
 ##### Mode 1 format
 
 | Offset | Width  | Purpose        | Resolution | Notes    |
@@ -104,16 +106,16 @@ The remaining bytes seem to be measurement values, encoded as big-endian integer
 
 ##### Mode 3 format
 
-| Offset | Width  | Purpose        | Resolution | Notes    |
-| ------ | ------ | -------------- | ---------- | -------- |
-| 4      | 24 bit | Voltage        | 0.01 V     |          |
-| 7      | 24 bit | Current        | 0.01 A     |          |
-| 10     | 24 bit | Charge         | 0.001 Ah   |          |
-| 13     | 32 bit | Energy         | 0.01 Wh    |          |
-| 17     | 16 bit | USB D+ Voltage | 0.01 V     |          |
-| 19     | 16 bit | USB D- Voltage | 0.01 V     |          |
-| 21     | 16 bit | Temperature    | 1 °C       |          |
-| 23     | 16 bit | On time        | 1 second   |          |
+| Offset | Width  | Purpose        | Resolution | Notes       |
+| ------ | ------ | -------------- | ---------- | ----------- |
+| 4      | 24 bit | Voltage        | 0.01 V     |             |
+| 7      | 24 bit | Current        | 0.01 A     |             |
+| 10     | 24 bit | Charge         | 0.001 Ah   |             |
+| 13     | 32 bit | Energy         | 0.01 Wh    |             |
+| 17     | 16 bit | USB D+ Voltage | 0.01 V     |             |
+| 19     | 16 bit | USB D- Voltage | 0.01 V     |             |
+| 21     | 16 bit | Temperature    | 1 °C       |             |
+| 23     | 16 bit | On time        | 1 second   | Unconfirmed |
 | 30     |  8 bit | Backlight      | 1 second   | Backlight duration, with special meaning for 0 as "long black" and 60 as "long bright" |
 
 ### Bluetooth command framing
