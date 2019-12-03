@@ -3,7 +3,7 @@
  */
 import {html, render} from 'https://unpkg.com/lit-html?module';
 
-import {request_device} from './hidance.js';
+import {request_device} from '../lib/hidance.js';
 
 let session = {
     enabled: false,
